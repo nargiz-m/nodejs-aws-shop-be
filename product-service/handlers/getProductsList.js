@@ -1,6 +1,6 @@
 const { products } = require('./mock/mocks')
 
-exports.handler = async () => {
+exports.handler = () => {
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },

@@ -1,6 +1,6 @@
 const { products } = require("./mock/mocks");
 
-exports.handler = async (event) => {
+exports.handler = (event) => {
   const product = products.find(product => product.id === event.pathParameters.product_id)
    
   if (product) {
