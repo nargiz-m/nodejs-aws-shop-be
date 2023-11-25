@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { NodejsAwsShopBeStack } from '../lib/nodejs-aws-shop-be-stack';
+import { ProductServiceStack } from '../lib/product-service-stack';
 
 const app = new cdk.App();
-new NodejsAwsShopBeStack(app, 'NodejsAwsShopBeStack', {
+new ProductServiceStack(app, 'ProductServiceStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
