@@ -1,13 +1,23 @@
 import { getProductsWithStocks } from "../services/getProductsWithStocks";
 
 export const handler = async () => {
-  const products = await getProductsWithStocks();
+  try {
+    const products = await getProductsWithStocks();
 
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify(products)
-  };
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify(products)
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: 'Internal Server Error'
+    }
+  }
 };

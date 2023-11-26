@@ -17,6 +17,11 @@ export class ProductService extends Construct {
       entry: "handlers/getProductsList.ts",
     })
 
+    const createProduct = new NodejsFunction(this, "createProduct", {
+      ...funcProps,
+      entry: "handlers/createProduct.ts",
+    })
+
     const getProductsById = new NodejsFunction(this, "getProductsById", {
       ...funcProps,
       entry: "handlers/getProductsById.ts",
@@ -28,6 +33,7 @@ export class ProductService extends Construct {
 
     const products = api.root.addResource('products');
     products.addMethod('GET', new apigateway.LambdaIntegration(getProductsList));
+    products.addMethod('POST', new apigateway.LambdaIntegration(createProduct));
 
     const product = products.addResource('{product_id}');
     product.addMethod('GET', new apigateway.LambdaIntegration(getProductsById));
