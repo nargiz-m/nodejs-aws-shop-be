@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { postNewProduct } from "../services/postNewProduct";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
+    console.log('POST /products, body:', JSON.stringify(event.body))
     if(!event.body) {
         return {
             statusCode: 400,

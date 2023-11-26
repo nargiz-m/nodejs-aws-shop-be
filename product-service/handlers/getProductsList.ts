@@ -1,6 +1,7 @@
 import { getProductsWithStocks } from "../services/getProductsWithStocks";
 
 export const handler = async () => {
+  console.log('GET /products')
   try {
     const products = await getProductsWithStocks();
 
