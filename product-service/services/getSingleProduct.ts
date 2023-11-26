@@ -19,6 +19,6 @@ export const getSingleProduct = async (productId: string) => {
 
     return product.Items?.length ? {
         ...product.Items[0],
-        count: stock.Items ? stock.Items[0].count : 0
+        count: stock.Items?.length ? stock.Items[0].count : 0
     } : undefined;
 }

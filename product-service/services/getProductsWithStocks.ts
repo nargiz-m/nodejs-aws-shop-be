@@ -6,7 +6,7 @@ const joinProductsAndStocks = (products: any[], stocks?: any[]) => {
         const matchingStock = stocks?.find((stock) => stock.product_id === product.id)
         return {
             ...product,
-            count: matchingStock.count ?? 0
+            count: matchingStock ? matchingStock.count : 0
         }
     })
 }
