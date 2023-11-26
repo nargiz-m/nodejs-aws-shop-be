@@ -4,7 +4,7 @@ import { postNewProduct } from "../services/postNewProduct";
 export const handler = async (event: APIGatewayProxyEvent) => {
     if(!event.body) {
         return {
-            statusCode: 404,
+            statusCode: 400,
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
