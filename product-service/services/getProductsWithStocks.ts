@@ -1,7 +1,9 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { Product } from "../models/Product";
+import { Stock } from "../models/Stock";
 
-const joinProductsAndStocks = (products: any[], stocks?: any[]) => {
+const joinProductsAndStocks = (products: Product[], stocks?: Stock[]) => {
     return products.map((product) => {
         const matchingStock = stocks?.find((stock) => stock.product_id === product.id)
         return {
@@ -19,5 +21,5 @@ export const getProductsWithStocks = async () => {
     const products = await docClient.send(getProducts);
     const stocks = await docClient.send(getStocks);
 
-    return products.Items?.length ? joinProductsAndStocks(products.Items, stocks.Items) : [];
+    return products.Items?.length ? joinProductsAndStocks(products.Items as Product[], stocks.Items as Stock[]) : [];
 }
