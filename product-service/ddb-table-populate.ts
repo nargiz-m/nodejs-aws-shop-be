@@ -1,4 +1,4 @@
-import products from './mocks.js';
+import products from './mocks';
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { fromIni } from "@aws-sdk/credential-providers";
 import { DynamoDBDocumentClient, TransactWriteCommand } from '@aws-sdk/lib-dynamodb';

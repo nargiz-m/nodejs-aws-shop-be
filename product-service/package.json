@@ -1,12 +1,11 @@
 {
   "name": "product-service",
   "version": "0.1.0",
-  "type": "module",
   "bin": {
     "product-service": "bin/product-service.js"
   },
   "scripts": {
-    "fillDB": "node ddb-table-populate",
+    "fillDB": "ts-node ddb-table-populate",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
