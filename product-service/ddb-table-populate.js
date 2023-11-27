@@ -20,6 +20,7 @@ products.forEach(async (product) => {
                 },
                 TableName: "Products",
             },
+        }, {
             Put: {
                 Item: {
                     product_id: product.id,
