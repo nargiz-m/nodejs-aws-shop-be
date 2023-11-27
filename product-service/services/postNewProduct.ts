@@ -3,13 +3,12 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 export const postNewProduct = async (product: any) => {
+    const { id, ...productInfo } = product;
     const dbClient = new DynamoDBClient({});
     const docClient = DynamoDBDocumentClient.from(dbClient);
     const newProduct = {
         id: uuidv4(),
-        title: product.title,
-        description: product.description,
-        price: product.price,
+        ...productInfo
     };
     const command = new PutCommand({
         TableName: "Products",
