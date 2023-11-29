@@ -1,14 +1,8 @@
-export const validateProductBody = (productStr: string | null) => {
-    if(!productStr) {
-        return true;
-    }
+import Joi = require("joi");
 
-    const product = JSON.parse(productStr);
-    if(!product.title) {
-        return true;
-    }
-    if(product.price && typeof product.price !== 'number') {
-        return true;
-    }
-    return false;
-}
+export const productSchema = Joi.object({
+    title: Joi.string().required(),
+    description: Joi.string().required(),
+    price: Joi.number().required(),
+    count: Joi.number().required(),
+});

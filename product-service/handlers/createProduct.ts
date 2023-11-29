@@ -1,29 +1,30 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { postNewProduct } from "../services/postNewProduct";
-import { validateProductBody } from "../validation/productValidator";
+import { productSchema } from "../validation/productValidator";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
     console.log('POST /products, body:', JSON.stringify(event.body));
 
-    const isProductInvalid = validateProductBody(event.body);
-    if(isProductInvalid) {
+    const productObj = JSON.parse(event.body ?? '')
+    const {error} = productSchema.validate(productObj);
+    if(error) {
         return {
             statusCode: 400,
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
-            body: 'Product data is invalid'
+            body: error.message
         }
     }
 
     try {
-        const product = await postNewProduct(JSON.parse(event.body ?? '')) 
+        const productId = await postNewProduct(productObj) 
         return {
             statusCode: 201,
             headers: {
               "Access-Control-Allow-Origin": "*",
             },
-            body: JSON.stringify(product)
+            body: `Product with id ${productId} was created`
         }
     } catch (error) {
         return {
