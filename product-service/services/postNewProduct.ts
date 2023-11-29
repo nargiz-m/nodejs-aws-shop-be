@@ -18,7 +18,7 @@ export const postNewProduct = async (product: Partial<Product & Stock>) => {
                     description,
                     price: Number(price)             
                 },
-                TableName: "Products",
+                TableName: process.env.PRODUCTS_TABLE_NAME,
             },
         }, {
             Put: {
@@ -26,7 +26,7 @@ export const postNewProduct = async (product: Partial<Product & Stock>) => {
                     product_id: id,
                     count: Number(count)
                 },
-                TableName: "Stocks",
+                TableName: process.env.STOCKS_TABLE_NAME,
             },
           },
         ]

@@ -5,12 +5,12 @@ export const getSingleProduct = async (productId: string) => {
     const dbClient = new DynamoDBClient({});
     const docClient = DynamoDBDocumentClient.from(dbClient);
     const getProduct = new QueryCommand({
-        TableName: "Products",
+        TableName: process.env.PRODUCTS_TABLE_NAME,
         KeyConditionExpression: "id = :id",
         ExpressionAttributeValues: { ":id": productId }
     });
     const getStock = new QueryCommand({
-        TableName: "Stocks",
+        TableName: process.env.STOCKS_TABLE_NAME,
         KeyConditionExpression: "product_id = :id",
         ExpressionAttributeValues: { ":id": productId }
     });

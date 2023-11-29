@@ -16,8 +16,8 @@ const joinProductsAndStocks = (products: Product[], stocks?: Stock[]) => {
 export const getProductsWithStocks = async () => {
     const dbClient = new DynamoDBClient({});
     const docClient = DynamoDBDocumentClient.from(dbClient);
-    const getProducts = new ScanCommand({TableName: "Products"});
-    const getStocks = new ScanCommand({TableName: "Stocks"});
+    const getProducts = new ScanCommand({TableName: process.env.PRODUCTS_TABLE_NAME});
+    const getStocks = new ScanCommand({TableName: process.env.STOCKS_TABLE_NAME});
     const products = await docClient.send(getProducts);
     const stocks = await docClient.send(getStocks);
 
