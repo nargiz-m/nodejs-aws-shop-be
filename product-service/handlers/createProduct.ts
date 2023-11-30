@@ -5,19 +5,18 @@ import { productSchema } from "../validation/productValidator";
 export const handler = async (event: APIGatewayProxyEvent) => {
     console.log('POST /products, body:', JSON.stringify(event.body));
 
-    const productObj = JSON.parse(event.body ?? '')
-    const {error} = productSchema.validate(productObj);
-    if(error) {
-        return {
-            statusCode: 400,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: error.message
-        }
-    }
-
     try {
+        const productObj = JSON.parse(event.body ?? '')
+        const {error} = productSchema.validate(productObj);
+        if(error) {
+            return {
+                statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                },
+                body: error.message //validation error
+            }
+        }
         const productId = await postNewProduct(productObj) 
         return {
             statusCode: 201,
@@ -32,7 +31,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
             headers: {
               "Access-Control-Allow-Origin": "*",
             },
-            body: 'Internal Server Error'
+            body: 'Server error occurred'
         }
     }
 }

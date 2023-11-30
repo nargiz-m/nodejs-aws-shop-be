@@ -29,7 +29,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
-      body: 'Internal Server Error'
+      body: 'Server error occurred'
     }
   }
 };
