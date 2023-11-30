@@ -74,6 +74,9 @@ components:
     Product:
       required:
         - title
+        - description
+        - price
+        - count
       type: object
       properties:
         id:
@@ -88,5 +91,8 @@ components:
         price:
           type: number
           example: 15
+        count:
+          type: number
+          example: 1
       xml:
         name: product
