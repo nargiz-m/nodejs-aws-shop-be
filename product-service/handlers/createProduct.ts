@@ -13,6 +13,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
                 statusCode: 400,
                 headers: {
                     "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Headers": "*"
                 },
                 body: error.message //validation error
             }
@@ -22,6 +24,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
             statusCode: 201,
             headers: {
               "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "*",
+              "Access-Control-Allow-Headers": "*"
             },
             body: `Product with id ${productId} was created`
         }
@@ -30,6 +34,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
             statusCode: 500,
             headers: {
               "Access-Control-Allow-Origin": "*",
+              "Access-Control-Allow-Methods": "*",
+              "Access-Control-Allow-Headers": "*"
             },
             body: 'Server error occurred'
         }

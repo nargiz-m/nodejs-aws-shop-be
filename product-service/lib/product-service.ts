@@ -33,7 +33,11 @@ export class ProductService extends Construct {
     })
 
     const api = new apigateway.RestApi(this, "products-api", {
-      restApiName: "Propduct Service"
+      restApiName: "Propduct Service",
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+        allowMethods: apigateway.Cors.ALL_METHODS
+      }
     });
 
     const products = api.root.addResource('products');
