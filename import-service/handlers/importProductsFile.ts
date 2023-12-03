@@ -16,6 +16,16 @@ export const handler = async (event: APIGatewayProxyEvent) => {
         }
     }
 
+    if(!fileName.includes(".csv")) {
+        return {
+            statusCode: 400,
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+            },
+            body: "Wrong file format"
+        }
+    }
+
     try {
         const command = new PutObjectCommand({
             Bucket: "s3-import-service-bucket",
