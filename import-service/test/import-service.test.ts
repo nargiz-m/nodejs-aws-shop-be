@@ -1,17 +1,39 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as ImportService from '../lib/import-service-stack';
+import { APIGatewayProxyEvent } from "aws-lambda";
+import { handler as importProductsFile } from "../handlers/importProductsFile";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { handler as importFileParser } from "../handlers/importFileParser";
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/import-service-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new ImportService.ImportServiceStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+jest.mock('@aws-sdk/s3-request-presigner')
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+describe('importProductsFile tests', () => {
+    test('returns error when no name provided in queryParams', async () => {
+        const fakeEvent: Partial<APIGatewayProxyEvent> = {}
+        const response = await importProductsFile(fakeEvent as APIGatewayProxyEvent);
+
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual('File name is missing');
+    })
+    test('returns error when provided with wrong file extension in queryParams', async () => {
+        const fakeEvent: Partial<APIGatewayProxyEvent> = {
+            queryStringParameters: {
+                name: 'file.pdf'
+            }
+        }
+        const response = await importProductsFile(fakeEvent as APIGatewayProxyEvent);
+
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual('Wrong file format');
+    })
+    test('provides url when provided with csv file name', async () => {
+        jest.mocked(getSignedUrl).mockImplementation(() => Promise.resolve('http://fakeUrl.com/uploaded/file.csv'))
+        const fakeEvent: Partial<APIGatewayProxyEvent> = {
+            queryStringParameters: {
+                name: 'file.csv'
+            }
+        }
+        const response = await importProductsFile(fakeEvent as APIGatewayProxyEvent);
+
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toBeTruthy();
+    })
 });
