@@ -42,12 +42,11 @@ describe('import-service tests', () => {
         })
     });
     describe('importFileParser tests', () => {
-        test('does not throw an error when providing csv file', async () => {
+        test('print succes message when provided with csv file', async () => {
             jest.mocked(S3Client.prototype.send).mockImplementation(() => ({
                 Body:  fs.createReadStream('test/mocks/example.csv')
             }))
-            console.error = jest.fn();
-            console.log = jest.fn();
+            const logSpy = jest.spyOn(global.console, 'log');
             const fakes3Event: Partial<S3EventRecord> = {
                 s3: {
                     s3SchemaVersion: '',
@@ -71,7 +70,7 @@ describe('import-service tests', () => {
                 Records: [fakes3Event as S3EventRecord]
             }
             await importFileParser(fakeEvent as S3Event);
-            expect(console.error).not.toHaveBeenCalled();
+            expect(logSpy.mock.calls[0][0]).toContain('>>>>> S3 Trigger Success: ');
         })
         test('throws an error when providing broken csv file', async () => {
             jest.mocked(S3Client.prototype.send).mockImplementation(() => ({
