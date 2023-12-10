@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Import API - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: https://3u5qilpipk.execute-api.us-east-1.amazonaws.com/prod/
+paths:
+  /import:
+    get:
+      parameters:
+        - in: query
+          name: name
+          schema:
+           type: string
+           description: The file name containing extension
+      responses:
+        '200':
+          description: successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: https://s3-import-service-bucket.s3.us-east-1.amazonaws.com/uploaded/nodejs-hw1-ex1.csv?X-Amz-Algorithm=...
+        '400':
+          description: File name is missing/Wrong file format
+        '500':
+          description: Server error occurred
