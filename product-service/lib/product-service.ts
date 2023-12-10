@@ -3,6 +3,8 @@ import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import 'dotenv/config';
+import { Queue } from "aws-cdk-lib/aws-sqs";
+import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 
 export class ProductService extends Construct {
   constructor(scope: Construct, id: string) {
@@ -31,6 +33,17 @@ export class ProductService extends Construct {
       ...funcProps,
       entry: "handlers/getProductsById.ts",
     })
+
+    const catalogBatchProcess = new NodejsFunction(this, "catalogBatchProcess", {
+      ...funcProps,
+      entry: "handlers/catalogBatchProcess.ts",
+    })
+
+    const catalogItemsQueue = new Queue(this, 'catalogItemsQueue');
+    const eventSource = new SqsEventSource(catalogItemsQueue, {
+      batchSize: 5
+    });
+    catalogBatchProcess.addEventSource(eventSource);
 
     const api = new apigateway.RestApi(this, "products-api", {
       restApiName: "Propduct Service",
