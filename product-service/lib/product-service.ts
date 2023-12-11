@@ -7,6 +7,8 @@ import { Queue } from "aws-cdk-lib/aws-sqs";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Duration } from "aws-cdk-lib";
+import { SubscriptionFilter, Topic } from "aws-cdk-lib/aws-sns";
+import { EmailSubscription, SqsSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 
 export class ProductService extends Construct {
   constructor(scope: Construct, id: string) {
@@ -36,22 +38,43 @@ export class ProductService extends Construct {
       entry: "handlers/getProductsById.ts",
     })
 
+    const createProductTopic = new Topic(this, 'ProductTopic');
+    createProductTopic.addSubscription(new EmailSubscription('7788342@mail.ru', {
+      filterPolicy: {
+        count: SubscriptionFilter.numericFilter({
+          greaterThan: 10
+        })
+      }
+    }));
+    createProductTopic.addSubscription(new EmailSubscription('7788342+test@mail.ru', {
+      filterPolicy: {
+        count: SubscriptionFilter.numericFilter({
+          lessThanOrEqualTo: 10
+        })
+      }
+    }));
+
     const catalogBatchProcess = new NodejsFunction(this, "catalogBatchProcess", {
       ...funcProps,
       entry: "handlers/catalogBatchProcess.ts",
+      environment: {
+        ...funcProps.environment,
+        TOPIC_ARN: createProductTopic.topicArn
+      }
     })
 
     const catalogItemsQueue = new Queue(this, 'catalogItemsQueue');
     const eventSource = new SqsEventSource(catalogItemsQueue, {
       batchSize: 5,
-      maxBatchingWindow: Duration.seconds(10)
+      maxBatchingWindow: Duration.seconds(10),
+      reportBatchItemFailures: true,
     });
     catalogBatchProcess.addToRolePolicy(new PolicyStatement({
       effect: Effect.ALLOW,
-      resources: [catalogItemsQueue.queueArn],
+      resources: [catalogItemsQueue.queueArn, createProductTopic.topicArn],
       actions: ["*"],
     }))
-    catalogBatchProcess.addEventSource(eventSource);
+    catalogBatchProcess.addEventSource(eventSource);    
 
     const api = new apigateway.RestApi(this, "products-api", {
       restApiName: "Propduct Service",
