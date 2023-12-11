@@ -27,7 +27,7 @@ export const handler = async (event: S3Event) => {
     const resBody = await response.Body as NodeJS.ReadableStream;
     const result = await parseFile(resBody)
     const sendResponse = await sqsClient.send(new SendMessageBatchCommand({
-      QueueUrl: 'https://sqs.us-east-1.amazonaws.com/851405323499/ProductServiceStack-ProductscatalogItemsQueueDAEB1709-Vq2q3zcOt0Bh',
+      QueueUrl: process.env.QUEUE_URL,
       Entries: (result as string[]).map((res, i) => ({
         Id: i.toString(),
         MessageBody: JSON.stringify(res)
