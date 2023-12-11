@@ -1,3 +1,4 @@
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 import csvParser = require("csv-parser");
 
 export const parseFile = (stream: NodeJS.ReadableStream) => {

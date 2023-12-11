@@ -5,6 +5,8 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import 'dotenv/config';
 import { Queue } from "aws-cdk-lib/aws-sqs";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { Duration } from "aws-cdk-lib";
 
 export class ProductService extends Construct {
   constructor(scope: Construct, id: string) {
@@ -41,8 +43,14 @@ export class ProductService extends Construct {
 
     const catalogItemsQueue = new Queue(this, 'catalogItemsQueue');
     const eventSource = new SqsEventSource(catalogItemsQueue, {
-      batchSize: 5
+      batchSize: 5,
+      maxBatchingWindow: Duration.seconds(10)
     });
+    catalogBatchProcess.addToRolePolicy(new PolicyStatement({
+      effect: Effect.ALLOW,
+      resources: [catalogItemsQueue.queueArn],
+      actions: ["*"],
+    }))
     catalogBatchProcess.addEventSource(eventSource);
 
     const api = new apigateway.RestApi(this, "products-api", {

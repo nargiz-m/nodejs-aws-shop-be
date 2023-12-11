@@ -1,8 +1,10 @@
 import { S3Event } from "aws-lambda";
 import { S3Client, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { parseFile } from "../helper";
+import { SQSClient, SendMessageBatchCommand } from "@aws-sdk/client-sqs";
 
 const client = new S3Client({});
+const sqsClient = new SQSClient({});
 
 export const handler = async (event: S3Event) => {
   const s3Key = event.Records[0].s3.object.key;
@@ -23,8 +25,15 @@ export const handler = async (event: S3Event) => {
   try {
     const response = await client.send(command);
     const resBody = await response.Body as NodeJS.ReadableStream;
-    const results = await parseFile(resBody)
-    console.log('>>>>> S3 Trigger Success: ', JSON.stringify(results));
+    const result = await parseFile(resBody)
+    const sendResponse = await sqsClient.send(new SendMessageBatchCommand({
+      QueueUrl: 'https://sqs.us-east-1.amazonaws.com/851405323499/ProductServiceStack-ProductscatalogItemsQueueDAEB1709-Vq2q3zcOt0Bh',
+      Entries: (result as string[]).map((res, i) => ({
+        Id: i.toString(),
+        MessageBody: JSON.stringify(res)
+      })),
+    }));
+    console.log('>>>>> S3 Trigger Success: ', JSON.stringify(sendResponse))
     const copyResponse = await client.send(copyCommand);
     console.log(JSON.stringify(copyResponse));
     const deleteResponse = await client.send(deleteCommand);
