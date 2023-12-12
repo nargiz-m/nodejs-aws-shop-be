@@ -14,7 +14,7 @@ export const handler = async (event: SQSEvent) => {
                 throw error
             }
             const productId = await postNewProduct(productObj) 
-            console.info("PRODUCT CREATED: ", productId);
+            console.log("PRODUCT CREATED: ", productId);
             const response =  await snsClient.send(new PublishCommand({
                 TopicArn: process.env.TOPIC_ARN,
                 Message: `${productId} has been created`,
