@@ -17,7 +17,14 @@ export const handler = async (event: SQSEvent) => {
             console.log("PRODUCT CREATED: ", productId);
             const response =  await snsClient.send(new PublishCommand({
                 TopicArn: process.env.TOPIC_ARN,
+                Subject: "New Product",
                 Message: `${productId} has been created`,
+                MessageAttributes: {
+                    count: {
+                      DataType: "Number",
+                      StringValue: String(productObj.count),
+                    },
+                },
             }))
             console.log('email sent: ', response)
         } catch (e) {
