@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
-export const handler = (event: APIGatewayProxyEvent) => {
+export const handler = async (event: APIGatewayProxyEvent) => {
     const token = event.headers.Authorization;
     if (!token) {
         return {
