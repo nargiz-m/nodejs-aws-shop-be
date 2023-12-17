@@ -4,6 +4,7 @@ import { Construct } from "constructs";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import { Bucket, EventType } from "aws-cdk-lib/aws-s3";
 import { LambdaDestination } from "aws-cdk-lib/aws-s3-notifications";
+import 'dotenv/config';
 
 export class ImportService extends Construct {
     constructor(scope: Construct, id: string) {
@@ -11,7 +12,10 @@ export class ImportService extends Construct {
 
         const funcProps = {
             runtime: Runtime.NODEJS_18_X,
-            handler: 'handler'
+            handler: 'handler',
+            environment: {
+                QUEUE_URL: process.env.QUEUE_URL as string,
+            }
         }
 
         const s3Bucket = Bucket.fromBucketName(this, 'bucketId', 's3-import-service-bucket');
