@@ -1,14 +1,18 @@
-# Welcome to your CDK TypeScript project
+# About
+A backend project for AWS Cloud Developer course
 
-This is a blank project for CDK development with TypeScript.
+### Links
+1. FE Link: https://dkms0bi6j44ln.cloudfront.net/
+2. FE Repo: https://github.com/nargiz-m/nodejs-aws-shop-react
+3. Products API Link: https://c9c9kmpx9f.execute-api.us-east-1.amazonaws.com/prod
+4. Import API LInk: https://3u5qilpipk.execute-api.us-east-1.amazonaws.com/prod
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+### Scripts
+1. To create a service from the current directory run: 
+```
+cdk init --language typescript
+```
+2. To deploy a service run: 
+```
+cdk deploy
+```
