@@ -8,7 +8,7 @@ import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Duration } from "aws-cdk-lib";
 import { SubscriptionFilter, Topic } from "aws-cdk-lib/aws-sns";
-import { EmailSubscription, SqsSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
+import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 
 export class ProductService extends Construct {
   constructor(scope: Construct, id: string) {
