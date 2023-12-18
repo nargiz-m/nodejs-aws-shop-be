@@ -11,7 +11,9 @@ export class AuthorizationService extends Construct {
         const funcProps = {
             runtime: Runtime.NODEJS_18_X,
             handler: 'handler',
-            environment: process.env as Record<string, string>,
+            environment: {
+                nargizm: process.env.nargizm as string,
+            },
         }
       
         const basicAuthorizer = new NodejsFunction(this, "basicAuthorizerLambda", {

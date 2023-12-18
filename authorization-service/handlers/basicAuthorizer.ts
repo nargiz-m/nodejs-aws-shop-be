@@ -1,29 +1,30 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
+import { APIGatewayTokenAuthorizerEvent } from "aws-lambda";
 
-export const handler = async (event: APIGatewayProxyEvent) => {
-    const token = event.headers.Authorization;
-    if (!token) {
-        return {
-            statusCode: 401,
-            body: 'Missing authorization header'
-        }
-    } 
+export const handler = async (event: APIGatewayTokenAuthorizerEvent) => {
+    const token = event.authorizationToken; 
+    let effect = 'Allow';
     try {
         const creds = atob(token.split(" ")[1]);
         const [username, password] = creds.split(':');
 
-        if(! Object.keys(process.env).includes(username) || process.env[username] !== password) {
-            throw new Error();   
+        if(!Object.keys(process.env).includes(username) || process.env[username] !== password) {
+            effect='Deny'   
         }
-
-        return {
-            statusCode: 200,
-            body: 'Success'
-        };
     } catch (error) {
+        effect='Deny'
+    } finally {
         return {
-            statusCode: 403,
-            body: 'Access Denied'
+            "principalId": "user",
+            "policyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Action": "execute-api:Invoke",
+                  "Effect": effect,
+                  "Resource": event.methodArn
+                }
+              ]
+            }
         }
     }
 }
