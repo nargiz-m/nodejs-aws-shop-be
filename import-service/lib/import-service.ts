@@ -25,6 +25,13 @@ export class ImportService extends Construct {
         })
         s3Bucket.addEventNotification(EventType.OBJECT_CREATED, new LambdaDestination(importFileParser), { prefix: 'uploaded/' })
 
+        const basicAuthorizer = NodejsFunction.fromFunctionArn(this, "basicAuthorizer",
+            process.env.AUTHORIZER_ARN as string
+        );
+        const tokenAuthorizer = new apigateway.TokenAuthorizer(this, "myAuthorizer", {
+            handler: basicAuthorizer,
+            identitySource:'method.request.header.Authorization'
+        })
         const importProductsFile = new NodejsFunction(this, 'importProductsFile', {
             ...funcProps,
             entry: "handlers/importProductsFile.ts",
@@ -38,7 +45,18 @@ export class ImportService extends Construct {
             }
         })
 
+        api.addGatewayResponse("GatewayResponse4XX", {
+            type: apigateway.ResponseType.DEFAULT_4XX,
+            responseHeaders: {
+              "Access-Control-Allow-Origin": "'*'",
+              "Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+              "Access-Control-Allow-Methods": "'OPTIONS,GET,PUT'"
+            },
+        });
+
         const importRoot = api.root.addResource('import');
-        importRoot.addMethod('GET', new apigateway.LambdaIntegration(importProductsFile));
+        importRoot.addMethod('GET', new apigateway.LambdaIntegration(importProductsFile), {
+            authorizer: tokenAuthorizer
+        });
     }
 }
