@@ -18,12 +18,15 @@ fastify.all("/*", {
     try {
       const urlPath = request.url.replace(`/${recipientServiceName}`, '');
       const response = await fetch(`${recipientURL}${urlPath}`, {
+        method: request.method,
         headers: {
-          authorization: request.headers.authorization
-        }
+          authorization: request.headers.authorization,
+          "content-type": request.headers["content-type"]
+        },
+        body: JSON.stringify(request.body)
       });
       const data = await response.json();
-      reply.status(data.statusCode).send(data);
+      reply.status(response.status).send(data);
     } catch (error) {
       reply.status(500).send('Server error occurred');
     }
