@@ -12,13 +12,12 @@ fastify.all("/*", {
     const recipientURL = process.env[recipientServiceName];
     
     if(!recipientURL) {
-      reply.status(500).send({message: 'Cannot process request'})
+      reply.status(502).send({message: 'Cannot process request'})
     }
     
-    const urlPath = request.url.indexOf(recipientServiceName);
-    console.log(urlPath)
     try {
-      const response = await fetch(recipientURL, {
+      const urlPath = request.url.replace(`/${recipientServiceName}`, '');
+      const response = await fetch(`${recipientURL}${urlPath}`, {
         headers: {
           authorization: request.headers.authorization
         }
@@ -26,7 +25,7 @@ fastify.all("/*", {
       const data = await response.json();
       reply.status(data.statusCode).send(data);
     } catch (error) {
-      
+      reply.status(500).send('Server error occurred');
     }
   }
 })
